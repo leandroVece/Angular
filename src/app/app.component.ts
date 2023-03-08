@@ -26,4 +26,14 @@ export class AppComponent {
 
   emojis = ['😂', '🐦', '🐳', '🌮', '💚']
   color = 'azul'
+
+  form = {
+    email: '',
+    password: ''
+  };
+
+  submitLogin(e: Event) {
+    e.preventDefault()
+    alert('enviado con exito usuario: ' + this.form.email)
+  }
 }

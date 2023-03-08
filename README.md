@@ -258,6 +258,114 @@ como su nombre lo indica y como lo he estado presentando, *ngSwitch es la forma 
 
 En este caso solo tenemos que agregar una variable que guarde un string con un color y ver el resultado.
 
+## NgClass y NgStyle
+
+Con el binding de [class] y [style] puedes agregar clases y estilos fácilmente. Pero se vuelve algo complicado en el caso de que necesites agregar varias clases o modificar muchos estilos. Es por esto que Angular ofrece las directivas ngClass y ngStyle para este propósito.
+
+Puedes bindear la directiva [ngStyle] o [ngClass] y pasarle un objeto con cada propiedad o clase que deseas agregar:
+
+**html**
+
+    <p class="ms-error" [class.invalid]="ageInput.invalid">Campo requerido </p>
+
+**app.componet.css**
+
+    .ms-error {
+      background-color: red;
+      color: white;
+    }
+
+Con lo que agregamos recientemente creamos una pequeña validadcion (aunque no muy coerente) para nuestro input de edad, pero no tiene sentido que se muestre cuando el valor sea verdadero ¿verdad? Veamos como lo solucionamos.
+
+    .ms-error {
+      background-color: red;
+      color: white;
+      opacity: 0;
+      &.invalid {
+        opacity: 1;
+      }
+    }
+
+Con esta pequeña adecion, creamos dos verificamos si la clase es invalid. en tal caso la opacidad estara al maximo mostrandonos nuestro cartel de requedido, caso contrario estara invisible al ojo.
+
+Veamos el siguiente ejemplo con el style.
+
+    <p [style.color]="ageInput.valid ? 'white' : 'red'">Campo requerido </p>
+
+Aqui determinamos el css que desde el archivo html y escondemos su contenido al ojo a travez de un operador ternario. En este caso simplemente lo escribi pero facilmente podria crear una variable que tenga este valor y llamarlo dentro de mi condicional. Todo queda bajo la imaginacion de uno.
+
+Con el binding de [class] y [style] puedes agregar clases y estilos fácilmente. Pero se vuelve algo complicado en el caso de que necesites agregar varias clases o modificar muchos estilos. Es por esto que Angular ofrece las directivas ngClass y ngStyle para este propósito.
+
+**html**
+
+    <p [ngClass]="ageInput.valid ? 'ms-error-false' : 'ms-error-true'">Campo requerido ejemplo 3 </p>
+
+**css**
+
+    .ms-error-false {
+      background-color: red;
+      color: white;
+      opacity: 0;
+
+    }
+
+    .ms-error-true {
+      background-color: red;
+      color: white;
+      opacity: 1;
+
+    }
+
+En este caso estamos cambiando las classe de manera dinamica, verifiacando los parametros que pusimos en nuestro input number.
+
+Y para el ultimo caso es algo mas conveniente porque nos permiria tener mas de un estilo desde nuestro archivo html.
+
+    <p [ngStyle]="ageInput.valid ?
+            { 'color': 'white',
+            'background': 'white'} :
+            {
+              'color': 'white',
+              'background': 'red'
+            }">Campo requerido ejempo 4 </p>
+
+
+## Formularios
+
+por ultimo veamos la particularidad de los formularios con Angular.
+
+**TS**
+
+    export class AppComponent {
+      ...
+        form = {
+            email: '',
+            password: ''
+          };
+
+            submitLogin(e: Event) {
+              e.preventDefault()
+              alert('enviado con exito usuario: ' + this.form.email)
+            }
+    }
+
+**html**
+
+    <form (ngSubmit)="submitLogin($event)" #formLogin="ngForm">
+      <div>
+        <label></label>
+        <input name="email" type="email" [(ngModel)]="form.email" required />
+      </div>
+      <div>
+        <label></label>
+        <input name="password" type="password" [(ngModel)]="form.password" required />
+      </div>
+      <div>
+        <button [disabled]="formLogin.invalid" type="submit">Iniciar sesión</button>
+      </div>
+    </form>
+
+Con este ultimo ejemplo vemos que creamos un objeto que captura los valores de los input y los almacena, luego la propiedad disabled esta activa mientras el formulario no se complete.
+
+Al final cuando apretamos el boton de iniciar sesion vemos llama a nuestra funcion submitLogin() que nos envia una alerta que nos verifica que todo esta andando correctamente.
+
 Con esto podriamos decir que has aprendido los conceptos mas basicos de Angular, los que te permitirian. !Felicidades por llegar hasta aqui! en una siguiente parte profundizaremos y veremos aun mas sobre este tema.
-
-

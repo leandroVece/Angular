@@ -5,9 +5,23 @@
 
 <input type="text" [(ngModel)]="persona.Nombre" (keyup)="onKeyUp($event)">
 
-<input type="text" #ageInput="ngModel" max="18" min="17" required [(ngModel)]="persona.Edad">
+<input type="number" #ageInput="ngModel" max="18" min="17" required [(ngModel)]="persona.Edad">
 <p>{{ageInput.valid}}</p>
 
+<p class="ms-error" [class.invalid]="ageInput.invalid">Campo requerido ejemplo 1 </p>
+
+
+<p [style.color]="ageInput.valid ? 'white' : 'red'">Campo requerido ejempo 2 </p>
+
+<p [ngClass]="ageInput.valid ? 'ms-error-false' : 'ms-error-true'">Campo requerido ejemplo 3 </p>
+
+<p [ngStyle]="ageInput.valid ?
+        { 'color': 'white',
+        'background': 'white'} :
+        {
+          'color': 'white',
+          'background': 'red'
+        }">Campo requerido ejempo 4 </p>
 
 <p *ngIf="(persona.Edad >= 10) else templateElse">Soy el if de tu else</p>
 <ng-template #templateElse>
@@ -34,3 +48,18 @@
     {{ el }}
   </li>
 </ul>
+
+
+<form (ngSubmit)="submitLogin($event)" #formLogin="ngForm">
+  <div>
+    <label></label>
+    <input name="email" type="email" [(ngModel)]="form.email" required />
+  </div>
+  <div>
+    <label></label>
+    <input name="password" type="password" [(ngModel)]="form.password" required />
+  </div>
+  <div>
+    <button [disabled]="formLogin.invalid" type="submit">Iniciar sesión</button>
+  </div>
+</form>

@@ -1,0 +1,23 @@
+.ms-error {
+  background-color: red;
+  color: white;
+  opacity: 0;
+
+  &.invalid {
+    opacity: 1;
+  }
+}
+
+.ms-error-false {
+  background-color: red;
+  color: white;
+  opacity: 0;
+
+}
+
+.ms-error-true {
+  background-color: red;
+  color: white;
+  opacity: 1;
+
+}
