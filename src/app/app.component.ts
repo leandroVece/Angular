@@ -7,4 +7,23 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'store';
+  persona = {
+    Nombre: "Ana",
+    Edad: 18
+  }
+  btbDisabled = true;
+
+
+  listenBtn(event: Event) {
+    const nombre = event.target as HTMLInputElement
+    alert("Hola " + nombre.value)
+  }
+
+  onKeyUp(event: Event) {
+    const element = event.target as HTMLInputElement
+    this.persona.Nombre = element.value;
+  }
+
+  emojis = ['😂', '🐦', '🐳', '🌮', '💚']
+  color = 'azul'
 }

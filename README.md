@@ -1,27 +1,263 @@
-# Store
+# Angular 
+>Nota: Antes de iniciar te recomiendo descargar la extensión en vsc de Angular Language Service que te ayudara con los problemas de tipeo en el codigo.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.1.
+Para trabajar con angular primero vamos a instalarla de manera global. Para ello es necesario tener instalado node.js con anterioridad.
 
-## Development server
+    npm i -g @angular/cli
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Esto instalara la version mas reciente de manera global. Luego para iniciar un nuevo proyecto escribiremos en nuestra terminal
 
-## Code scaffolding
+    ng new my-project
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+con esto podremos correr nuestra aplicacion despues de una serie de preguntas simples y una eleccion de un preprocesador de css. Si no estas familiarizado con los preprocesadores de css. simplemente puedes elegir la primera opcion de lo contrario puedes elegir la que estes mas familiarizado. de todas maneras no vamos a tocar el tema de los estilo en esta pequeña unidad.
 
-## Build
+## Cominicacion de datos
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+En angular, usamos typeScript para realizar las partes logicas del lado del cliente. como no es un curso de typeScript y voy a tomar por sabido tales temas, en caso contrario no se desanime. ya que no es algo que le impedira aprender sobre este Framework.
 
-## Running unit tests
+Comencemos por eliminar el contenido de nuestro archivo app.componet.html. Luego escribamos el siguiente lineas.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    <h1>Hola {{'mundo'}}</h1>
 
-## Running end-to-end tests
+Como pueden ver aqui rellenamos el contenido de una forma "hibrida". con esto podemos ver que se puede interactuar como si fuera una pagina normal accediendo a su contenido por medio de Js. por ejemplo, usemos Js para repetir el contenido un par de veces
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+    <h1>Hola {{'mundo'.repeat(2)}}</h1>
 
-## Further help
+Como se puede apreciar use una funcion de js para modificar el contenido siempre manteniedolos dentro de las dobles llaves.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Division de responsabilidades
+
+Un componente de Angular se divide en tres archivos: uno para el código TypeScript, otro para el código HTML y uno más para el código CSS.
+Si vamos a nuestro archivo app.component.ts podemos ver claramente esta distincion.
+
+    import { Component } from '@angular/core';
+
+    @Component({
+      selector: 'app-root',
+      templateUrl: './app.component.html',
+      styleUrls: ['./app.component.scss']
+    })
+    export class AppComponent {
+      title = 'store';
+    }
+
+Angular usa el concepto de decoradores para modificar el comportamiento de las clases. Un decorador angular es una clase especial de declaración que puede acoplarse a una clase, método, propiedad o parámetro. Los decoradores se declaran de la siguiente manera @expression, donde la expresión debe evaluar a una función. Gracias al parámetro @ podemos reconocer fácilmente que estamos hablando de un decorador.
+
+La clase AppComponent implementa el decorador @Component() para indicarle a Angular que esta clase será un componente. Dentro de este decorador, puedes observar el selector del componente (un nombre para el mismo), el template HTML y la hoja de estilos que usará.
+
+Para probar su funcionalidad agreguemos una pequeña varaible a nuestra clase AppComponet.
+
+    export class AppComponent {
+      title = 'store';
+      Nombre = 'Juan';
+    }
+
+Luego volvamos a nuestros archivos html asociado a nuestro decorador y llamemos a nuestra variable.
+
+    <h1>Hola {{Nombre}}</h1>
+
+>Nota: si la variable esta mal escrita, el programa lo reconocera como un error. este atento a esto ya que en Js, al no ser fuertemente tipado podria dejar pasar cosas como esta.
+
+¡Felicidades ahora sabe como pasar parametros a nuestros archivos Html! Sigamos mas adelante para ver que mas podemos hacer con esto.
+
+## propety binding
+
+Es la manera que dispone Angular para controlar y modificar las propiedades de los distintos elementos de HTML. Para esto, simplemente utiliza los corchetes [] para poder modificar dinámicamente ese atributo desde el controlador.
+
+Pongámoslo en un ejemplo simple. En nuestra funcion AppComponent agregaremos un nuevo parametro para un boton que vamos a crear.
+
+    export class AppComponent {
+      title = 'store';
+      Nombre = 'Juan';
+      btbDisabled = true;
+    }
+
+**HTML**
+
+    <button [disabled]="btbDisabled">boton</button>
+
+Vemos que el estado del boton va a depender especificamente de mi nuevo atributo btnDisabled. Claro que este no es el unico caso, pero sirve para visualizar lo que podemos hacer con las propety binding.
+
+provemos algo mas que podria ser mas comun, como darle un valor a un input.
+
+    export class AppComponent {
+      title = 'store';
+      Nombre = 'Juan';
+      btbDisabled = true;
+    }
+
+**HTML**
+
+    <input type="button" [value]="Nombre">
+
+## Eventos o Event binding
+
+Para crear eventos la sintaxis todavia siguie siendo amigable. modifiquemos entonces nuestro boton para que llame a un alert cuando le le demos un click.
+
+    export class AppComponent {
+      title = 'store';
+      Nombre = 'Juan';
+      btbDisabled = true;
+      value = 'Juan';
+
+      listenBtn() {
+        alert("Hola " + this.Nombre)
+      }
+    }
+
+**HTML**
+
+    <input type="button" (click)="listenBtn()" [value]="Nombre">
+
+Ahora que sabemos como crear eventos, tambien vemos la necesidad de saber como pasar parametros a los eventos que creamos. Hagamos la modificacion entonces.
+
+    listenBtn(event: Event) {
+      const nombre = event.target as HTMLInputElement
+      alert("Hola " + nombre.value)
+    }
+
+**HTML**
+
+    <input type="button" (click)="listenBtn($event)" [value]="Nombre">
+
+Con esto logramos capturar el valor del imput y mandarlo a nuestra funcion. Como se puede apreciar, los elementos pertenecinetes al don necesitas que se le anteponga el signo "$" para que sea reconocido.
+
+Luego es necesario que el nombre de lo que le enviamos, sea "tipeado" en nuestra funcion y lo podremos tratar como un elemento html capturado por Js.
+
+Veamos otro ejemplo y agregruemos el siguiente metodo.
+
+      onKeyUp(event: Event) {
+        const element = event.target as HTMLInputElement
+        this.Nombre = element.value;
+      }
+
+**HTML**
+
+    <input type="text" [value]="Nombre" (keyup)="onKeyUp($event)">
+
+Con esto ahora estamos capturando el valor del input y cada vez que este valor cambia, su contenido cambia dinamicamente.
+
+## Data binding con ngModel
+
+El ngModel es una directiva en Angular que te permite realizar Two-Way Data Binding. Con Two-Way Data Binding, puedes vincular una propiedad tanto para la lectura como para la escritura, lo que significa que tanto la vista como el componente pueden actualizar el valor de la propiedad y ambos se mantendrán sincronizados.
+
+Para hacer este ejemplo vamos a importar el Modulo del paquete de Angular Forms. Para hacerlo vamos a nuestro archivo App.module.ts.
+
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+    @NgModule({
+      declarations: [
+        AppComponent
+      ],
+      imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule
+      ],
+      providers: [],
+      bootstrap: [AppComponent]
+    })
+    export class AppModule { }
+
+>Nota: Estos son paquetes con nombres preestablecidos, no son nombre aleatorios y arbitrarios.
+
+    export class AppComponent {
+      title = 'store';
+      persona = {
+        Nombre: "Ana",
+        Edad: 18
+      }
+      btbDisabled = true;
+
+      listenBtn(event: Event) {
+        const nombre = event.target as HTMLInputElement
+        alert("Hola " + nombre.value)
+      }
+
+      onKeyUp(event: Event) {
+        const element = event.target as HTMLInputElement
+        this.persona.Nombre = element.value;
+      }
+    }
+
+Ahora si hacemos una pequeña modificacion a nuestro input veremos que todo permenace igual.
+
+    <input type="text" [(ngModel)]="Nombre" (keyup)="onKeyUp($event)">
+
+Claro que este no es la unica fucion conveniente que tiene este paquete. por ejemlplo creemos otro input, pero esta vez que reciba numeros.
+
+    <input type="text" #ageInput="ngModel" max="18" min="17" required [(ngModel)]="persona.Edad">
+    <p>{{ageInput.valid}}</p>
+
+Lo que hicimos aqui es una "validacion" simple del formulario. gracias al paquete de angular Forms, nos permite identificar gracias a la etiqueta #ageInput los campos que pusimos como regla en las etiquetas html.
+
+De esa manera si el input tiene un numero que no este dentro de nuestro rango (max y min) o no tenga nada(requiered) nos mostrara un resultado que varia entre true o false.
+
+## Estructuras de control
+
+Los condicioneles son estructuras de control basicas que inevitablementes vamos a usar. Angular tiene su forma particular de condicional que es ngIf.
+
+veamoslo en un ejemplo.
+
+    <p *ngIf="(persona.Edad<= 20)">Soy el if de tu else</p>
+
+Para usar un else en Angular, la sintaxis es algo especial. Debes crear un template en tu código HTML usando la etiqueta que provee Angular llamada ng-template con una Variable de Template, comenzando con #, para hacer referencia a este elemento desde tu If.
+
+    <p *ngIf="(persona.Edad <= 10) else templateElse">Soy el if de tu else</p>
+    <ng-template #templateElse>
+      <div>yo soy el else </div>
+    </ng-template>
+
+## Iteradores
+
+De la misma manera que los if, en Angular los el iterador tiene una forma particular de ser llamado.
+
+agregurmos un arra de emogin a nuestra clase component
+
+    emojis = ['😂', '🐦', '🐳', '🌮', '💚']
+
+luego iteremoslos en una etiqueta nueva y veamos su comportamiento.
+
+    <ul>
+      <li *ngFor="let el of emojis ">
+        {{ el }}
+      </li>
+    </ul>
+
+ngFor también cuenta con un índice con el número de iteraciones. Puedes acceder a este número agregando al ngFor index as i de la siguiente manera
+
+    <ul>
+      <li *ngFor="let el of emojis; index as i"">
+        {{ el }}
+      </li>
+    </ul>
+
+## *ngSwitch
+
+como su nombre lo indica y como lo he estado presentando, *ngSwitch es la forma particular de  Angular para hacer un switch.
+
+    <div [ngSwitch]="color">
+      <p *ngSwitchCase="'azul'">
+        El color el Azul
+      </p>
+      <p *ngSwitchCase="'verde'">
+        El color el Verde
+      </p>
+      <p *ngSwitchCase="'rojo'">
+        El color el Rojo
+      </p>
+      <p *ngSwitchDefault>
+        No hay ningún color
+      </p>
+    </div>
+
+En este caso solo tenemos que agregar una variable que guarde un string con un color y ver el resultado.
+
+Con esto podriamos decir que has aprendido los conceptos mas basicos de Angular, los que te permitirian. !Felicidades por llegar hasta aqui! en una siguiente parte profundizaremos y veremos aun mas sobre este tema.
+
+
